@@ -15,7 +15,14 @@ module.exports = router;
 
 function authenticate(req, res, next) {
     userService.authenticate(req.body)
-        .then(user => user ? res.json(user) : res.status(400).json({ message: 'Usuario o contraseña no es correcta' }))
+        .then(result => {
+            if (result.error) {
+                // Si hay un error (usuario no encontrado, no verificado o contraseña incorrecta)
+                return res.status(400).json({ message: result.error });
+            }
+            // Si no hay errores, enviar el usuario y el token como respuesta
+            res.json(result);
+        })
         .catch(err => {
             console.log(err);
             next(err);

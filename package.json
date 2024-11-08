@@ -16,8 +16,8 @@
         "express": "^4.17.1",
         "express-jwt": "^6.0.0",
         "jsonwebtoken": "^8.5.1",
-        "mongodb": "^3.5.9",
-        "mongoose": "^5.9.21",
+        "mongodb": "^6.9.0",
+        "mongoose": "^8.7.2",
         "rootpath": "^0.1.2"
     },
     "devDependencies": {

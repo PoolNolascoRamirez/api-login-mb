@@ -15,13 +15,29 @@ module.exports = {
 
 async function authenticate({ email, password }) {
     const user = await User.findOne({ email });
-    if (user && bcrypt.compareSync(password, user.hash)) {
-        const token = jwt.sign({ sub: user.id }, config.secret, { expiresIn: '7d' });
-        return {
-            ...user.toJSON(),
-            token
-        };
+
+    if (!user) {
+        // Si el usuario no existe
+        return { error: 'User email does not exist' };
     }
+
+    if (!user.verified) {
+        // Si el usuario no está verificado
+        return { error: 'User is not verified' };
+    }
+
+    // Verifica la contraseña
+    const isPasswordMatch = bcrypt.compareSync(password, user.hash);
+    if (!isPasswordMatch) {
+        return { error: 'Password is not correct' };
+    }
+
+    // Si todo es válido, genera el token JWT
+    const token = jwt.sign({ sub: user.id }, config.secret, { expiresIn: '7d' });
+    return {
+        ...user.toJSON(),
+        token
+    };
 }
 
 async function getAll() {
